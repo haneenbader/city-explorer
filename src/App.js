@@ -1,54 +1,83 @@
-
-import React, { Component } from 'react';
-
+  
 import axios from 'axios';
+import React from 'react';
+import { Form, Button } from 'react-bootstrap';
+import Image from 'react-bootstrap/Image'
+import './App.css'
 
-class App extends Component {
 
+
+export class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      cityName: ''
+      location: '',
+      data: '',
+      show: false
     }
-  };
-
-  updateCityNameState = (e) => {
-    this.setState({
-      cityName: (e.target.value)
-    });
   }
 
-
-  getCityData = async (e) => {
-    e.preventdefault();
-    const axionResponce = await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.aa1e1f18e47ddfdc3b6905e918e424b6&q=${this.state.cityName}&format=json`);
+  locationEvent = (event) => {
+    event.preventDefault();
     this.setState({
-      cityData: axionResponce.data[0],
-      displayData: true
+      location: event.target.value
     })
   }
 
+  locationData = async (e) => {
+    e.preventDefault();
+
+    try {
+      this.setState({ show: true })
+      const url = `https://us1.locationiq.com/v1/search.php?key=pk.8776f995fd36c562b2158fb09706895f&q=${this.state.location}&format=json`;
+      const request = await axios.get(url);
+      this.setState({ data: request.data[0] })
+    }
+    catch (err) {
+      this.setState({
+        show: false
+      });
+    }
+  }
+
+
   render() {
-    return (
+    if (this.state.show === true) {
+      return (
+        <div>
+          {/* {process.env.REACT_APP_API_KEY} */}
+          <h2>City Explorer</h2>
+          <Form>
+            <Form.Label>Where would you like to explore?</Form.Label>
+            <br></br>
+            <br></br>
+            <Form.Control type="text" placeholder="input location here…" onChange={this.locationEvent} />
+            <br></br>
+            <br></br>
+
+            <Button type="submit" onClick={this.locationData}>Explore!</Button>
+          </Form>
+          <p>Welcome to {this.state.data.display_name} is located at {this.state.data.lat} by {this.state.data.lon}</p>
+          <Image src={`https://maps.locationiq.com/v3/staticmap?key=pk.8776f995fd36c562b2158fb09706895f&center=${this.state.data.lat},${this.state.data.lon}`} alt='' fluid />
+         
+        </div>
+      )
+    } else {
+      return(
       <div>
-        <h1> Enter City Explorer</h1>
-        <form onSubmit={this.getCityData}>
-          <label> City Name  </label>
-          <input type="text" onChange={this.updateCityNameState} /> 
-          <br></br>
-          <button type="submit" value="git City" > Explor! </button>
-        </form>
-        {this.state.displayData &&
-          <div>
-            <p> {this.state.cityName.display_name } is located at {this.state.data.lat} by {this.state.data.lon} </p>
-            {/* <img src={``} alt='' /> */}
-          </div>
-        }
+      <h2>City Explorer</h2>
+      <Form>
+        <Form.Label>Where would you like to explore?</Form.Label>
+        <br></br>
+        <Form.Control type="text" placeholder="input location here…" onChange={this.locationEvent} />
+        <br></br>
+        <Button type="submit" onClick={this.locationData}>Explore!</Button>
+      </Form>
+     
       </div>
-    )
+      )
+    }
   }
 }
 
-export default App
-
-
+export default App;
