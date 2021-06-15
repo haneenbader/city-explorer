@@ -12,6 +12,7 @@
   padding: 15px 15px 20px 20px;
   font-size: 25px;
   color: rgb(43, 42, 42);
+ 
 }
 input  {
   
@@ -20,6 +21,7 @@ input  {
   margin-left: 20px;
   height: 25px;
   width: 333px;
+  text-align:center;
 }
 #root > div > form > button{
   
@@ -30,20 +32,17 @@ input  {
  background-color: rgb(85, 83, 83);
  color: white;
  font-size: 15px;
+ text-align:center;
 }
 img{
   width: 400px;
   height: 300px;
   margin-left: 20px;
+  border-radius: 50% ;
+  
 }
 #root  div  p{
   margin-left: 20px;
   font-size: 20px
-}
-#footer{
-  text-align: center;
-  background-color: rgba(128, 128, 128, 0.199);
-  margin: 15px 15px;
-  padding: 15px 15px;
   
 }
