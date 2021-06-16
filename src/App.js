@@ -4,6 +4,7 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image'
 import './App.css'
+import Weather from './component/weather'
 
 
 
@@ -14,6 +15,7 @@ export class App extends React.Component {
       location: '',
       data: '',
       show: false
+      weatherData : []
     }
   }
 
@@ -31,7 +33,13 @@ export class App extends React.Component {
       this.setState({ show: true })
       const url = `https://us1.locationiq.com/v1/search.php?key=pk.8776f995fd36c562b2158fb09706895f&q=${this.state.location}&format=json`;
       const request = await axios.get(url);
-      this.setState({ data: request.data[0] })
+      const myApi = `${process.env.REACT_APP_URL}/weather`
+      const showMyApp = await axios.get(myApi)
+      this.setState({ 
+        data: request.data[0] 
+        weatherData : showApi.data ;
+        
+      })
     }
     catch (err) {
       this.setState({
@@ -59,7 +67,7 @@ export class App extends React.Component {
           </Form>
           <p>Welcome to {this.state.data.display_name} is located at {this.state.data.lat} by {this.state.data.lon}</p>
           <Image src={`https://maps.locationiq.com/v3/staticmap?key=pk.8776f995fd36c562b2158fb09706895f&center=${this.state.data.lat},${this.state.data.lon}`} alt='' fluid />
-         
+          <Weather weatherData={this.state.weatherData}/>
         </div>
       )
     } else {
