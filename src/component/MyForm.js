@@ -10,13 +10,14 @@ class MyForm extends React.Component {
                     <Form.Group>
                         <Form.Label >Where would you like to explore?</Form.Label>
                         <Col ></Col>
-                        <Form.Control type="text" placeholder="input location here…" onChange={this.props.locationEvent}/>
+                        <Form.Control  type="text" placeholder="input location here…" onChange={this.props.locationEvent}/>
                        
                     </Form.Group>
                     <br></br>
                     <br></br>
-                    </Form>
                     <Button type="submit" onClick={this.props.locationData}>Explore!</Button>
+                    </Form>
+                   
                 
             </div>
         )
