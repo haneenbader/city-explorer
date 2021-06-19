@@ -36,8 +36,8 @@ export class App extends React.Component {
     try {
       this.setState({ show: true })
       const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_IQ_KEY}&q=${this.state.location}&format=json`;
-      // const myApi = `${process.env.REACT_APP_PORT}`
-      const showApi = await axios.get(url);
+      //  const myApi = `${process.env.REACT_APP_PORT}`
+      const showApi = await axios.get( url);
       console.log(showApi.data);
 
       const request = await axios.get(url);
