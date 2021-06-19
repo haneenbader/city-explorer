@@ -1,4 +1,4 @@
-  
+
 import axios from 'axios';
 import React from 'react';
 import Img from './component/Img';
@@ -18,8 +18,8 @@ export class App extends React.Component {
       location: '',
       data: '',
       show: false,
-      errorMsg :'',
-      weatherData : []
+      errorMsg: '',
+      weatherData: []
     }
   }
 
@@ -36,46 +36,60 @@ export class App extends React.Component {
     try {
       this.setState({ show: true })
       const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_IQ_KEY}&q=${this.state.location}&format=json`;
-      const myApi = `${process.env.REACT_APP_PORT}`
-      const showApi = await axios.get(myApi);
-      console.log(showApi.data);
+      // const myApi = `${process.env.REACT_APP_PORT}`
+      // const showApi = await axios.get(url);
+      // console.log(showApi.data);
 
       const request = await axios.get(url);
-      this.setState({ 
+      this.setState({
         data: request.data[0],
-        weatherData : showApi.data 
+        // weatherData: showApi.data
       })
     }
     catch (err) {
       this.setState({
         show: false,
-        errorMsg :'Something went wrong.'
+        errorMsg: 'Something went wrong.'
       });
     }
   }
 
-  render() {
-      return (
-        <>
-          <Header />
-          <div>
-            <MyForm locationEvent={this.locationEvent} locationData={this.locationData} />
-            {
-              (this.state.show) ?
-                <>
-                  <Img lat={this.state.data.lat} lon={this.state.data.lon} name={this.state.data.display_name} />
-                  <Weather weatherData={this.state.weatherData}/>
-                </>
-                :
-                <>
-                  <p>{this.state.errorMsg}</p>
-                </>
-            }
-            <Footer />
-          </div>
-        </>
-      )
-    }
+
+
+  getWeatherData = async () => {
+    const myApi = `${process.env.REACT_APP_URL}/weather?lat=${this.state.data.lat}&lon=${this.state.data.lon}`
+    const showApi = await axios.get(myApi);
+    // console.log(showApi.data);
+
+    this.setState({
+      weatherData: showApi.data
+    })
   }
 
-  export default App;
+  render() {
+    // if (this.locationData){
+    return (
+     
+      <>
+        <Header />
+        <div>
+          <MyForm locationEvent={this.locationEvent} locationData={this.locationData} />
+          {
+            (this.state.show) ?
+              <>
+                <Img lat={this.state.data.lat} lon={this.state.data.lon} name={this.state.data.display_name} />
+                <Weather weatherData={this.state.weatherData} />
+              </>
+              :
+              <>
+                <p>{this.state.errorMsg}</p>
+              </>
+          }
+          <Footer />
+        </div>
+      </>
+    )
+  }
+}
+// }
+export default App;
