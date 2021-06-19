@@ -1,9 +1,13 @@
-  
+
 import axios from 'axios';
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
-import Image from 'react-bootstrap/Image'
+import Img from './component/Img';
+import MyForm from './component/MyForm'
+import Header from './component/Header';
+import Footer from './component/Footer';
 import './App.css'
+import Weather from './component/Weather';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -13,7 +17,9 @@ export class App extends React.Component {
     this.state = {
       location: '',
       data: '',
-      show: false
+      show: false,
+      errorMsg: '',
+      weatherData: []
     }
   }
 
@@ -29,55 +35,49 @@ export class App extends React.Component {
 
     try {
       this.setState({ show: true })
-      const url = `https://us1.locationiq.com/v1/search.php?key=pk.8776f995fd36c562b2158fb09706895f&q=${this.state.location}&format=json`;
+      const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATION_IQ_KEY}&q=${this.state.location}&format=json`;
+      // const myApi = `${process.env.REACT_APP_PORT}`
+      const showApi = await axios.get(url);
+      console.log(showApi.data);
+
       const request = await axios.get(url);
-      this.setState({ data: request.data[0] })
+      this.setState({
+        data: request.data[0],
+        weatherData: showApi.data
+      })
     }
     catch (err) {
       this.setState({
-        show: false
+        show: false,
+        errorMsg: 'Something went wrong.'
       });
     }
   }
 
-
   render() {
-    if (this.state.show === true) {
-      return (
-        <div>
-          {/* {process.env.REACT_APP_API_KEY} */}
-          <h2>City Explorer</h2>
-          <Form>
-            <Form.Label>Where would you like to explore?</Form.Label>
-            <br></br>
-            <br></br>
-            <Form.Control type="text" placeholder="input location here…" onChange={this.locationEvent} />
-            <br></br>
-            <br></br>
-
-            <Button type="submit" onClick={this.locationData}>Explore!</Button>
-          </Form>
-          <p>Welcome to {this.state.data.display_name} is located at {this.state.data.lat} by {this.state.data.lon}</p>
-          <Image src={`https://maps.locationiq.com/v3/staticmap?key=pk.8776f995fd36c562b2158fb09706895f&center=${this.state.data.lat},${this.state.data.lon}`} alt='' fluid />
-         
-        </div>
-      )
-    } else {
-      return(
-      <div>
-      <h2>City Explorer</h2>
-      <Form>
-        <Form.Label>Where would you like to explore?</Form.Label>
-        <br></br>
-        <Form.Control type="text" placeholder="input location here…" onChange={this.locationEvent} />
-        <br></br>
-        <Button type="submit" onClick={this.locationData}>Explore!</Button>
-      </Form>
+    // if (this.locationData){
+    return (
      
-      </div>
-      )
-    }
+      <>
+        <Header />
+        <div>
+          <MyForm locationEvent={this.locationEvent} locationData={this.locationData} />
+          {
+            (this.state.show) ?
+              <>
+                <Img lat={this.state.data.lat} lon={this.state.data.lon} name={this.state.data.display_name} />
+                <Weather weatherData={this.state.weatherData} />
+              </>
+              :
+              <>
+                <p>{this.state.errorMsg}</p>
+              </>
+          }
+          <Footer />
+        </div>
+      </>
+    )
   }
 }
-
+// }
 export default App;
